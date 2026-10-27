@@ -582,6 +582,18 @@ bool check_menu_button_pressed(int profile_index, recompinput::GameInput input, 
 
 int cont_button_to_key(SDL_ControllerButtonEvent& button) {
     int player1_profile = recompinput::profiles::get_input_profile_for_player(0, recompinput::InputDevice::Controller);
+    // A controller that was switched on after the game started may not be assigned to player 1 yet (the saved assignment waits
+    // for every saved controller): its buttons then used a wrong profile and only the stick / d-pad worked in the menus.
+    // Use the profile of the controller that sent the event.
+    {
+        SDL_GameController* source = recompinput::get_controller_from_joystick_id(button.which);
+        if (source != nullptr) {
+            int source_profile = recompinput::profiles::get_controller_profile_index_from_sdl_controller(source);
+            if (source_profile >= 0) {
+                player1_profile = source_profile;
+            }
+        }
+    }
 
     for (const auto& mapping_pair : recompui::menu_action_mapping::rml_key_to_action) {
         const auto& mapping = mapping_pair.second;

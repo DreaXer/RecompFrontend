@@ -95,6 +95,7 @@ bool sdl_event_filter(void* userdata, SDL_Event* event) {
                 profiles::add_controller(guid, profile_index);
             }
         }
+        players::restore_saved_assignment();
     }
     break;
     case SDL_EventType::SDL_CONTROLLERDEVICEREMOVED:

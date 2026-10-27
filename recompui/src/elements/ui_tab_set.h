@@ -20,6 +20,7 @@ namespace recompui {
         Element *indicator = nullptr;
 
         bool visible = true;
+        bool selectable = true;
 
         static constexpr float tab_vertical_padding = 20.0f;
         static constexpr float tab_horizontal_padding = 24.0f;
@@ -32,6 +33,8 @@ namespace recompui {
         void set_selected(bool selected);
         void set_visible(bool is_visible);
         bool get_visible() { return visible; }
+        void set_selectable(bool selectable);
+        bool get_selectable() { return selectable; }
     };
 
     class TabSet : public Element {
@@ -50,6 +53,7 @@ namespace recompui {
         Element *get_active_tab_element() const { return active_tab >= 0 && active_tab < static_cast<int>(tabs.size()) ? tabs[active_tab] : nullptr; };
         int get_active_tab() const { return active_tab; }
         void set_tab_visible(int tab_index, bool is_visible);
+        void set_tab_selectable(int tab_index, bool selectable);
         int get_next_tab_in_direction(int index, int direction);
     };
 

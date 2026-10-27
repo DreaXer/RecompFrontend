@@ -1,6 +1,7 @@
 #ifndef __RECOMP_INPUT_PLAYER_ASSIGNMENT_H__
 #define __RECOMP_INPUT_PLAYER_ASSIGNMENT_H__
 
+#include <filesystem>
 #include "recompinput.h"
 
 namespace recompinput {
@@ -26,6 +27,11 @@ namespace recompinput {
         bool get_player_is_assigned(int player_index, bool temp_player = false);
         bool has_enough_players_assigned();
         InputDevice get_player_input_device(int player_index, bool temp_player = false);
+
+        // Persistent assignment: the confirmed assignment is saved to this file and restored at startup / when the
+        // saved controllers are detected, so controllers don't have to be re-assigned at every launch.
+        void set_assignment_file_path(const std::filesystem::path& path);
+        void restore_saved_assignment();
     }
 
     namespace playerassignment {

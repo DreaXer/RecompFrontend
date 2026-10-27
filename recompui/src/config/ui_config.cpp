@@ -3,6 +3,7 @@
 #include "elements/ui_icon_button.h"
 #include "ui_config_page_options_menu.h"
 #include "recompinput/profiles.h"
+#include "recompinput/players.h"
 #include "util/file.h"
 #include "librecomp/game.hpp"
 
@@ -13,6 +14,7 @@ struct PendingTab {
     std::string id;
     recompui::TabCallbacks callbacks;
     bool hidden = false;
+    bool selectable = true;
 };
 static std::vector<PendingTab> pending_tabs;
 static bool loaded_configs = false;
@@ -117,6 +119,8 @@ namespace recompui {
         }
 
         recompinput::profiles::load_controls_config(recomp::get_config_path() / (config::controls::id + ".json"));
+        recompinput::players::set_assignment_file_path(recomp::get_config_path() / "player_assignment.json");
+        recompinput::players::restore_saved_assignment();
 
         loaded_configs = true;
     }
@@ -135,6 +139,20 @@ namespace recompui {
         }
     }
 
+    void config::set_tab_selectable(const std::string &id, bool selectable) {
+        if (config_modal == nullptr) {
+            for (auto &tab : pending_tabs) {
+                if (tab.id == id) {
+                    tab.selectable = selectable;
+                    return;
+                }
+            }
+            throw std::runtime_error("No tab with ID '" + id + "' has been added to the config modal.");
+        } else {
+            config_modal->set_tab_selectable(id, selectable);
+        }
+    }
+
     void config::init_modal() {
         if (!loaded_configs) {
             throw std::runtime_error("Configurations have not been loaded. Call recompui::config::finalize() first.");
@@ -150,6 +168,9 @@ namespace recompui {
             config_modal->add_tab(tab.name, tab.id, tab.callbacks.create_contents, tab.callbacks.can_close, tab.callbacks.on_close);
             if (tab.hidden) {
                 config_modal->set_tab_visible(tab.id, false);
+            }
+            if (!tab.selectable) {
+                config_modal->set_tab_selectable(tab.id, false);
             }
         }
         config_modal->set_selected_tab(0);

@@ -432,6 +432,17 @@ void TabbedModal::add_tab(
     initialize_tab(tab_contexts.back());
 }
 
+void TabbedModal::set_tab_selectable(const std::string &id, bool selectable) {
+    if (tabs != nullptr) {
+        for (int i = 0; i < tab_contexts.size(); i++) {
+            if (tab_contexts[i].id == id) {
+                tabs->set_tab_selectable(i, selectable);
+                break;
+            }
+        }
+    }
+}
+
 void TabbedModal::set_tab_visible(const std::string &id, bool is_visible) {
     if (tabs != nullptr) {
         for (int i = 0; i < tab_contexts.size(); i++) {

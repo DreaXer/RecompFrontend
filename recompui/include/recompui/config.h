@@ -138,6 +138,9 @@ namespace recompui {
         // Sets a tab with the given ID to be hidden or visible. Can be used for debug tabs, or hidden configs.
         void set_tab_visible(const std::string &id, bool is_visible);
 
+        // Greys a tab out and makes it impossible to select (it stays visible).
+        void set_tab_selectable(const std::string &id, bool selectable);
+
         void set_tab(const std::string &id);
         void open();
         bool close();

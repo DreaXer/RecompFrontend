@@ -124,5 +124,6 @@ namespace recompui {
         void set_selected_tab(const std::string &id);
         Element *get_active_tab() { return tabs != nullptr ? static_cast<Tab*>(tabs->get_active_tab_element()) : nullptr; }
         void set_tab_visible(const std::string &id, bool is_visible);
+        void set_tab_selectable(const std::string &id, bool selectable);
     };
 } // namespace recompui

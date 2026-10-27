@@ -49,10 +49,16 @@ Tab::Tab(ResourceId rid, Element *parent, int tab_index, std::string_view text, 
     add_style(&disabled_style, { disabled_state });
 }
 
+void Tab::set_selectable(bool is_selectable) {
+    selectable = is_selectable;
+    set_enabled(visible && selectable);
+    set_focusable(visible && selectable);
+}
+
 void Tab::set_visible(bool is_visible) {
     visible = is_visible;
-    set_enabled(visible);
-    set_focusable(visible);
+    set_enabled(visible && selectable);
+    set_focusable(visible && selectable);
 
     if (visible) {
         set_display(default_display_setting);
@@ -178,13 +184,13 @@ int TabSet::get_next_tab_in_direction(int index, int direction) {
         // Check if wrapped back to the original start index.
         if (new_index == index) {
             // Ensure original index is visible.
-            if (tabs[index]->get_visible()) {
+            if ((tabs[index]->get_visible() && tabs[index]->get_selectable())) {
                 return index;
             }
             return -1;
         }
 
-        if (tabs[new_index]->get_visible()) {
+        if ((tabs[new_index]->get_visible() && tabs[new_index]->get_selectable())) {
             return new_index;
         }
 
@@ -204,6 +210,13 @@ void TabSet::set_tab_visible(int tab_index, bool is_visible) {
     if (!is_visible && active_tab == tab_index) {
         set_active_tab(get_next_tab_in_direction(tab_index, 1), true);
     }
+}
+
+void TabSet::set_tab_selectable(int tab_index, bool selectable) {
+    if (tab_index < 0 || tab_index >= static_cast<int>(tabs.size())) {
+        return;
+    }
+    tabs[tab_index]->set_selectable(selectable);
 }
 
 } // namespace recompui
