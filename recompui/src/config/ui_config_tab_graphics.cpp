@@ -240,7 +240,7 @@ namespace recompui {
                 "Resolution",
                 "Sets the output resolution of the game. <recomp-color primary>Original</recomp-color> matches the game's original 240p resolution. <recomp-color primary>Original 2x</recomp-color> will render at 480p. <recomp-color primary>Auto</recomp-color> will scale based on the game window's resolution.",
                 resolution_options,
-                ultramodern::renderer::Resolution::Auto
+                ultramodern::renderer::Resolution::Original // 40winks default (was Auto)
             );
             {
                 config.add_option_change_callback(
@@ -291,7 +291,7 @@ namespace recompui {
                 "Aspect Ratio",
                 "Sets the horizontal aspect ratio. <recomp-color primary>Original</recomp-color> uses the game's original 4:3 aspect ratio. <recomp-color primary>Expand</recomp-color> will adjust to match the game window's aspect ratio.",
                 aspect_ratio_options,
-                ultramodern::renderer::AspectRatio::Expand
+                ultramodern::renderer::AspectRatio::Original // 40winks default (was Expand)
             );
 
             config.add_enum_option(
@@ -299,7 +299,7 @@ namespace recompui {
                 "Window Mode",
                 "Sets whether the game should display <recomp-color primary>Windowed</recomp-color> or <recomp-color primary>Fullscreen</recomp-color>. You can also use <recomp-color primary>F11</recomp-color> or <recomp-color primary>Alt + Enter</recomp-color> to toggle this option.",
                 window_mode_options,
-                wm_default()
+                ultramodern::renderer::WindowMode::Fullscreen // 40winks default (was wm_default(): windowed off Steam Deck)
             );
 
             config.add_enum_option(
@@ -307,7 +307,7 @@ namespace recompui {
                 "Framerate",
                 get_framerate_text(60),
                 refresh_rate_options,
-                ultramodern::renderer::RefreshRate::Display
+                ultramodern::renderer::RefreshRate::Original // 40winks default (was Display)
             );
 
             config.add_number_option(
@@ -333,7 +333,7 @@ namespace recompui {
                 "<br />"
                 "<recomp-color primary>Note: This option won't be available if your GPU does not support programmable MSAA sample positions, as it is currently required to avoid rendering glitches.</recomp-color>",
                 antialiasing_options,
-                ultramodern::renderer::Antialiasing::MSAA2X
+                ultramodern::renderer::Antialiasing::None // 40winks default (was MSAA2X)
             );
 
             config.add_enum_option(
@@ -341,7 +341,7 @@ namespace recompui {
                 "HUD Placement",
                 "Adjusts the placement of HUD elements to fit the selected aspect ratio. <recomp-color primary>Expand</recomp-color> will use the aspect ratio of the game's output window.",
                 hud_ratio_mode_options,
-                ultramodern::renderer::HUDRatioMode::Clamp16x9
+                ultramodern::renderer::HUDRatioMode::Original // 40winks default (was Clamp16x9)
             );
 
             config.add_enum_option(
@@ -384,7 +384,7 @@ namespace recompui {
                 "Upscale 2D",
                 "Which 2D elements (HUD, menus, sprites) are drawn at high resolution. <recomp-color primary>All</recomp-color> is sharper but can show seams between pieces of 2D backgrounds.",
                 { {0u, "Original", "Original"}, {1u, "ScaledOnly", "Scaled Only"}, {2u, "All", "All"} },
-                1u
+                0u // 40winks default: Original
             );
 
             return config;
