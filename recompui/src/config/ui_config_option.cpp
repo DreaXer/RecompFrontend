@@ -44,6 +44,10 @@ ConfigOptionElement::ConfigOptionElement(
         set_padding_top(0.0f);
     }
 
+    // 40winks: option names in game lettering.
+    name_label->enable_game_text(1); // swinging letters
+    name_label->set_text(name_text);
+
     update_hidden();
 }
 
@@ -139,6 +143,7 @@ ConfigOptionEnum::ConfigOptionEnum(
     auto &enum_opt = config->get_option_config<recomp::config::ConfigOptionEnum>(this->option_index);
     for (uint32_t i = 0; i < enum_opt.options.size(); i++) {
         radio->add_option(enum_opt.options[i].name);
+        radio->get_option_element(i)->use_game_text(enum_opt.options[i].name); // 40winks
     }
 
     update_value();
@@ -214,6 +219,8 @@ ConfigOptionNumber::ConfigOptionNumber(
             this->on_hover(this->option_id);
         }
     });
+    slider->get_value_label()->enable_game_text(2); // 40winks: static letters, normal size
+    apply_game_slider_style(slider); // 40winks
     update_value();
     update_disabled();
 };

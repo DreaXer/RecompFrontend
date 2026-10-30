@@ -191,6 +191,22 @@ namespace recompui {
         config_modal->modal_root_context.close();
     }
 
+    // 40winks
+    static std::function<void(recompui::TabbedModal *modal)> update_callback;
+
+    void config::set_update_callback(std::function<void(recompui::TabbedModal *modal)> callback) {
+        update_callback = std::move(callback);
+    }
+
+    void config::update() {
+        if (config_modal == nullptr || !update_callback || !recompui::is_context_shown(config_modal->modal_root_context)) {
+            return;
+        }
+        config_modal->modal_root_context.open();
+        update_callback(config_modal);
+        config_modal->modal_root_context.close();
+    }
+
     ContextId config::get_config_context_id() {
         if (config_modal == nullptr) {
             throw std::runtime_error("Config modal has not been initialized.");

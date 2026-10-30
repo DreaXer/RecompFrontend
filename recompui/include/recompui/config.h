@@ -61,6 +61,10 @@ namespace recompui {
                 inline const std::string hpfb_option = "hpfb_option";
                 inline const std::string rr_manual_value = "rr_manual_value";
                 inline const std::string ds_option = "ds_option";
+                // 40winks
+                inline const std::string tf_option = "tf_option";
+                inline const std::string of_option = "of_option";
+                inline const std::string u2d_option = "u2d_option";
             }
     
             void update_msaa_supported(bool supported);
@@ -150,6 +154,10 @@ namespace recompui {
         recompui::TabbedModal *get_config_modal();
 
         ContextId get_config_context_id();
+
+        // 40winks: called every frame while the config modal is shown, with its context open.
+        void set_update_callback(std::function<void(recompui::TabbedModal *modal)> callback);
+        void update();
 
         // Get any added config by ID.
         recomp::config::Config &get_config(const std::string &id);

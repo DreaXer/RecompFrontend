@@ -2,6 +2,7 @@
 
 #include "ui_clickable.h"
 #include "ui_label.h"
+#include "ui_image.h"
 
 namespace recompui {
     
@@ -14,6 +15,9 @@ namespace recompui {
     class Slider : public Element {
     private:
         SliderType type = SliderType::Percent;
+        bool game_images = false; // 40winks
+        float game_travel = 1.0f; // 40winks
+        Element *knob_image = nullptr; // 40winks
         Label *value_label = nullptr;
         Clickable *slider_element = nullptr;
         Clickable *bar_element = nullptr;
@@ -41,6 +45,11 @@ namespace recompui {
         std::string_view get_type_name() override { return "Slider"; }
 
     public:
+        Label *get_value_label() { return value_label; } // 40winks
+        // 40winks: game-style slider: `bar_src` stretched to bar_width x bar_height (dp), `knob_src` (knob_width x
+        // knob_height) moving over the middle `travel` fraction of the bar; the knob turns yellow when focused.
+        void use_game_images(const std::string &bar_src, const std::string &knob_src, float bar_width, float bar_height,
+            float knob_width, float knob_height, float travel);
         Slider(ResourceId rid, Element *parent, SliderType type);
         virtual ~Slider();
         void set_value(double v);
@@ -58,4 +67,7 @@ namespace recompui {
         void set_focus_callback(std::function<void(bool)> callback);
     };
 
+    // 40winks: game-specific slider look, applied by the config options (ConfigOptionNumber).
+    void set_game_slider_styler(std::function<void(Slider *)> styler);
+    void apply_game_slider_style(Slider *slider);
 } // namespace recompui

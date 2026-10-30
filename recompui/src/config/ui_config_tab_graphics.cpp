@@ -176,6 +176,9 @@ namespace recompui {
             new_config.rr_manual_value = get_graphics_number_value<int>(graphics::options::rr_manual_value);
 
             new_config.ds_option = get_graphics_enum_value<int>(graphics::options::ds_option);
+            new_config.tf_option = get_graphics_enum_value<int>(graphics::options::tf_option);
+            new_config.of_option = get_graphics_enum_value<int>(graphics::options::of_option);
+            new_config.u2d_option = get_graphics_enum_value<int>(graphics::options::u2d_option);
 
             ultramodern::renderer::set_graphics_config(new_config);
         }
@@ -356,7 +359,32 @@ namespace recompui {
                 "Sets whether to use a high precision framebuffer.",
                 hpfb_options,
                 ultramodern::renderer::HighPrecisionFramebuffer::Off,
-                true
+                false // 40winks: shown (was hidden)
+            );
+
+            // 40winks: RT64 settings only reachable from its developer menu. Values are RT64's enum values.
+            config.add_enum_option(
+                graphics::options::tf_option,
+                "Texture Filtering",
+                "<recomp-color primary>3-Point</recomp-color> is the N64's own texture filter. <recomp-color primary>Bilinear</recomp-color> is smoother.",
+                { {1u, "ThreePoint", "3-Point"}, {0u, "Bilinear", "Bilinear"} },
+                1u
+            );
+
+            config.add_enum_option(
+                graphics::options::of_option,
+                "Output Filter",
+                "How the rendered image is scaled to the window. <recomp-color primary>Nearest</recomp-color> keeps sharp pixels, mostly visible at <recomp-color primary>Original</recomp-color> resolution.",
+                { {2u, "PixelScaling", "Pixel Scaling"}, {1u, "Linear", "Linear"}, {0u, "Nearest", "Nearest"} },
+                2u
+            );
+
+            config.add_enum_option(
+                graphics::options::u2d_option,
+                "Upscale 2D",
+                "Which 2D elements (HUD, menus, sprites) are drawn at high resolution. <recomp-color primary>All</recomp-color> is sharper but can show seams between pieces of 2D backgrounds.",
+                { {0u, "Original", "Original"}, {1u, "ScaledOnly", "Scaled Only"}, {2u, "All", "All"} },
+                1u
             );
 
             return config;

@@ -429,7 +429,26 @@ std::string escape_rml(std::string_view string)
 	return result;
 }
 
+// 40winks
+static std::function<std::optional<std::string>(std::string_view, int)> game_text_converter;
+
+void set_game_text_converter(std::function<std::optional<std::string>(std::string_view, int)> converter) {
+    game_text_converter = std::move(converter);
+}
+
+void Element::set_rml_class(const std::string &name, bool enable) {
+    base->SetClass(name, enable);
+}
+
 void Element::set_text(std::string_view text) {
+    if (can_set_text && game_text && game_text_converter) {
+        if (std::optional<std::string> rml = game_text_converter(text, game_text_variant)) {
+            get_current_context().queue_set_text(this, std::move(*rml));
+            game_text_shown = true;
+            return;
+        }
+    }
+    game_text_shown = false;
     if (can_set_text) {
         // Queue the text update. If it's applied immediately, it might happen
         // while the document is being updated or rendered. This can cause a crash

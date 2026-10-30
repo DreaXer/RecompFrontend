@@ -35,6 +35,19 @@ namespace recompui {
         add_style(&disabled_style, { disabled_state });
     }
 
+    void RadioOption::use_game_text(std::string_view name) {
+        enable_game_text();
+        set_text(name);
+        if (!is_game_text()) {
+            return; // No game letters (no ROM yet): keep the plain text look.
+        }
+        set_opacity(0.55f);
+        hover_style.set_opacity(0.8f);
+        checked_style.set_opacity(1.0f);
+        disabled_style.set_opacity(0.25f);
+        apply_styles();
+    }
+
     void RadioOption::set_pressed_callback(std::function<void(uint32_t)> callback) {
         pressed_callback = callback;
     }
@@ -45,6 +58,7 @@ namespace recompui {
 
     void RadioOption::set_selected_state(bool enable) {
         set_style_enabled(checked_state, enable);
+        set_rml_class("winks-checked", enable); // 40winks: yellow letters (assets/recomp.rcss)
         set_as_primary_focus(enable);
     }
 

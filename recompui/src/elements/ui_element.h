@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+
 #include "ui_style.h"
 #include "../core/ui_context.h"
 
@@ -70,6 +72,9 @@ private:
     bool disabled_attribute = false;
     bool disabled_from_parent = false;
     bool can_set_text = false;
+    bool game_text = false; // 40winks
+    int game_text_variant = 0; // 40winks
+    bool game_text_shown = false; // 40winks
 
     bool is_nav_container = false;
     bool is_nav_wrapping = false;
@@ -124,6 +129,14 @@ public:
     void set_enabled(bool enabled);
     bool is_enabled() const;
     virtual void set_text(std::string_view text);
+    // 40winks: once enabled, set_text goes through the converter set with set_game_text_converter (game-specific
+    // lettering as raw RML); a converter returning nullopt keeps the plain text. `variant` is passed to the converter
+    // (e.g. animated or static letters).
+    void enable_game_text(int variant = 0) { game_text = true; game_text_variant = variant; }
+    // True once a set_text went through the converter (game lettering is shown, not plain text).
+    bool is_game_text() const { return game_text_shown; }
+    // 40winks: toggles an RCSS class on the underlying element (for game-specific style rules).
+    void set_rml_class(const std::string &name, bool enable);
     // Only use if you can ensure text is directly from a trusted source. Sets inner rml contents which can create new elements.
     void set_text_unsafe(std::string_view text);
     std::string get_input_text();
@@ -186,5 +199,8 @@ public:
 };
 
 void queue_ui_callback(recompui::ResourceId resource, const Event& e, const UICallback& callback);
+
+// 40winks: converter used by elements with enable_game_text().
+void set_game_text_converter(std::function<std::optional<std::string>(std::string_view, int variant)> converter);
 
 } // namespace recompui

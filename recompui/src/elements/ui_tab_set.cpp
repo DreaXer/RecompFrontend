@@ -7,6 +7,7 @@ Tab::Tab(ResourceId rid, Element *parent, int tab_index, std::string_view text, 
     Element(rid, parent, Events(EventType::Click, EventType::Hover, EventType::Enable, EventType::Focus), "button", false)
 {
     this->tab_index = tab_index;
+    this->text = text; // 40winks
     this->on_select_tab = std::move(on_select_tab);
     set_visible(true);
     set_position(Position::Relative);

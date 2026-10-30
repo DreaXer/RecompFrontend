@@ -60,6 +60,14 @@ Modal::Modal(
 
     modal_overlay = context.create_element<ModalOverlay>(this);
 
+    // 40winks: empty layer behind the modal panel, for a game-specific background (get_background_holder).
+    background_holder = context.create_element<Element>(modal_overlay);
+    background_holder->set_position(Position::Absolute);
+    background_holder->set_top(0);
+    background_holder->set_right(0);
+    background_holder->set_bottom(0);
+    background_holder->set_left(0);
+
     Element* modal_whole_page_wrapper = context.create_element<Element>(modal_overlay);
     modal_whole_page_wrapper->set_display(Display::Flex);
     modal_whole_page_wrapper->set_position(Position::Absolute);

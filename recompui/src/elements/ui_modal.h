@@ -65,6 +65,7 @@ namespace recompui {
         Element *modal_element = nullptr;
         ConfigHeaderFooter *header = nullptr;
         Element *modal_overlay = nullptr;
+        Element *background_holder = nullptr; // 40winks
         Element *body = nullptr;
         Element *menu_actions_wrapper = nullptr;
         ModalType modal_type;
@@ -88,6 +89,8 @@ namespace recompui {
 
         ConfigHeaderFooter *get_header() { return header; }
         Element *get_body() { return body; }
+        // 40winks: layer behind the modal panel, covering the whole screen.
+        Element *get_background_holder() { return background_holder; }
 
         void set_on_close_callback(std::function<void()> callback);
         // Adds a callback for MenuAction events. Description is shown under the modal if provided.
@@ -123,6 +126,7 @@ namespace recompui {
         void set_selected_tab(int tab_index);
         void set_selected_tab(const std::string &id);
         Element *get_active_tab() { return tabs != nullptr ? static_cast<Tab*>(tabs->get_active_tab_element()) : nullptr; }
+        TabSet *get_tab_set() { return tabs; } // 40winks
         void set_tab_visible(const std::string &id, bool is_visible);
         void set_tab_selectable(const std::string &id, bool selectable);
     };

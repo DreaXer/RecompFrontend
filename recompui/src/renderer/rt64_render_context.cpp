@@ -177,6 +177,10 @@ void set_application_user_config(RT64::Application* application, const ultramode
     application->userConfig.refreshRateTarget = config.rr_manual_value;
     application->userConfig.internalColorFormat = to_rt64(config.hpfb_option);
     application->userConfig.displayBuffering = RT64::UserConfiguration::DisplayBuffering::Triple;
+    // 40winks
+    application->userConfig.threePointFiltering = config.tf_option != 0;
+    application->userConfig.filtering = static_cast<RT64::UserConfiguration::Filtering>(config.of_option);
+    application->userConfig.upscale2D = static_cast<RT64::UserConfiguration::Upscale2D>(config.u2d_option);
 }
 
 ultramodern::renderer::SetupResult map_setup_result(RT64::Application::SetupResult rt64_result) {

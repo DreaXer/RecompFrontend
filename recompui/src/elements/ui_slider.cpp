@@ -41,11 +41,17 @@ namespace recompui {
         double left = slider_element->get_absolute_left();
         double width = slider_element->get_client_width();
         double ratio = std::clamp((x - left) / width, 0.0, 1.0);
+        if (game_images) {
+            ratio = std::clamp(((x - left) / width - 0.5) / game_travel + 0.5, 0.0, 1.0); // 40winks
+        }
         set_value_internal(min_value + ratio * (max_value - min_value), false, true);
     }
 
     void Slider::update_circle_position() {
         double ratio = std::clamp((value - min_value) / (max_value - min_value), 0.0, 1.0);
+        if (game_images) {
+            ratio = 0.5 + (ratio - 0.5) * game_travel; // 40winks
+        }
         circle_element->set_left(ratio * 100.0, Unit::Percent);
     }
 
@@ -87,7 +93,14 @@ namespace recompui {
             }
             break;
         case EventType::Update:
-            if (is_enabled()) {
+            if (game_images) { // 40winks
+                bool focused = circle_element->is_style_enabled(focus_state);
+                knob_image->set_image_color(focused ? Color{0xFF, 0xFF, 0x00, 0xFF} : Color{0xFF, 0xFF, 0xFF, 0xFF});
+                if (focused) {
+                    queue_update();
+                }
+            }
+            else if (is_enabled()) {
                 if (circle_element->is_style_enabled(focus_state)) {
                     circle_element->set_background_color(recompui::get_pulse_color(750));
                     queue_update();
@@ -119,12 +132,12 @@ namespace recompui {
                 if (enable_active) {
                     set_cursor(Cursor::Pointer);
                     set_focusable(true);
-                    circle_element->set_background_color(theme::color::TextDim);
+                    if (!game_images) circle_element->set_background_color(theme::color::TextDim);
                 }
                 else {
                     set_cursor(Cursor::None);
                     set_focusable(false);
-                    circle_element->set_background_color(theme::color::BW25);
+                    if (!game_images) circle_element->set_background_color(theme::color::BW25);
                 }
             }
             break;
@@ -182,6 +195,58 @@ namespace recompui {
         }
 
         set_value_internal(value, true, false);
+    }
+
+    void Slider::use_game_images(const std::string &bar_src, const std::string &knob_src, float bar_width, float bar_height,
+        float knob_width, float knob_height, float travel) {
+        ContextId context = get_current_context();
+        game_images = true;
+        game_travel = travel;
+        set_align_items(AlignItems::Center);
+        // Bar closer to the value (game lettering is narrower than "100%" in the UI font); bars stay aligned.
+        value_label->set_margin_right(6.0f);
+        value_label->set_min_width(40.0f);
+        value_label->set_max_width(80.0f);
+        slider_element->set_flex(0.0f, 0.0f);
+        slider_element->set_width(bar_width);
+        slider_element->set_height(knob_height);
+
+        bar_element->set_height(bar_height);
+        bar_element->set_margin_top((knob_height - bar_height) / 2.0f);
+        bar_element->set_background_color(theme::color::Transparent);
+        bar_element->set_position(Position::Relative);
+        Element *bar_image = context.create_element<Image>(bar_element, bar_src);
+        bar_image->set_position(Position::Absolute);
+        bar_image->set_left(0);
+        bar_image->set_top(0);
+        bar_image->set_width(100.0f, Unit::Percent);
+        bar_image->set_height(100.0f, Unit::Percent);
+
+        circle_element->set_background_color(theme::color::Transparent);
+        circle_element->set_border_radius(0);
+        circle_element->set_width(knob_width);
+        circle_element->set_height(knob_height);
+        circle_element->set_margin_top(-(knob_height - bar_height) / 2.0f);
+        circle_element->set_margin_left(-knob_width / 2.0f);
+        circle_element->set_margin_right(-knob_width / 2.0f);
+        circle_element->set_rml_class("winks-knob", true); // above the bar image created after it (assets/recomp.rcss)
+        knob_image = context.create_element<Image>(circle_element, knob_src);
+        knob_image->set_width(100.0f, Unit::Percent);
+        knob_image->set_height(100.0f, Unit::Percent);
+
+        update_circle_position();
+    }
+
+    static std::function<void(Slider *)> game_slider_styler; // 40winks
+
+    void set_game_slider_styler(std::function<void(Slider *)> styler) {
+        game_slider_styler = std::move(styler);
+    }
+
+    void apply_game_slider_style(Slider *slider) {
+        if (game_slider_styler) {
+            game_slider_styler(slider);
+        }
     }
 
     Slider::~Slider() {

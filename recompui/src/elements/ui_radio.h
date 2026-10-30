@@ -21,6 +21,8 @@ namespace recompui {
         void set_pressed_callback(std::function<void(uint32_t)> callback);
         void set_focus_callback(std::function<void(bool)> callback);
         void set_selected_state(bool enable);
+        // 40winks: game lettering; unselected entries are dimmed by opacity instead of text color.
+        void use_game_text(std::string_view name);
     };
 
     class Radio : public Container {

@@ -875,6 +875,7 @@ void draw_hook(plume::RenderCommandList* command_list, plume::RenderFramebuffer*
         if (recompui::is_context_shown(recompui::get_launcher_context_id())) {
             recompui::update_launcher_menu();
         }
+        recompui::config::update(); // 40winks
 
         ui_state->update_contexts();
 

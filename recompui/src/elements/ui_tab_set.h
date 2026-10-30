@@ -18,6 +18,7 @@ namespace recompui {
         on_change_tab_callback on_select_tab;
         Element *label = nullptr;
         Element *indicator = nullptr;
+        std::string text; // 40winks
 
         bool visible = true;
         bool selectable = true;
@@ -35,6 +36,10 @@ namespace recompui {
         bool get_visible() { return visible; }
         void set_selectable(bool selectable);
         bool get_selectable() { return selectable; }
+        // 40winks: for game-specific tab headers.
+        const std::string &get_text() const { return text; }
+        Element *get_label() { return label; }
+        bool get_selected() const { return is_selected; }
     };
 
     class TabSet : public Element {
@@ -55,6 +60,7 @@ namespace recompui {
         void set_tab_visible(int tab_index, bool is_visible);
         void set_tab_selectable(int tab_index, bool selectable);
         int get_next_tab_in_direction(int index, int direction);
+        const std::vector<Tab *> &get_tabs() const { return tabs; } // 40winks
     };
 
 } // namespace recompui

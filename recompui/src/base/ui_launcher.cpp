@@ -429,7 +429,7 @@ namespace recompui {
                         break;
                     case recomp::RomValidationError::IncorrectVersion:
                         recompui::message_box(
-                                "This ROM is the correct game, but the wrong version.\nThis project requires the NTSC-U N64 version of the game.");
+                                "This ROM is the correct game, but the wrong version.\nThis project requires the European N64 version of the game (N4WZ)."); // 40winks
                         break;
                     case recomp::RomValidationError::OtherError:
                         recompui::message_box("An unknown error has occurred.");
